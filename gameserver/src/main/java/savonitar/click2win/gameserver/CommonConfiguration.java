@@ -46,7 +46,7 @@ class CommonConfiguration {
     @Bean
     public HandlerMapping handlerMapping(StreamingHandler streamingHandler) {
         Map<String, WebSocketHandler> map = new HashMap<>();
-        map.put("/streaming", streamingHandler);
+        map.put("/gamesession", streamingHandler);
         int order = -1; // before annotated controllers
 
         return new SimpleUrlHandlerMapping(map, order);
