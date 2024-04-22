@@ -23,7 +23,7 @@ public class StreamingHandlerTest {
     public void client_subscribes_and_gets_proper_number_of_events() {
         // given
         WebSocketClient client = new ReactorNettyWebSocketClient();
-        URI uri = URI.create("ws://localhost:8080/streaming");
+        URI uri = URI.create("ws://localhost:8080/gamesession");
         List<ServerGameEvent> serverGameEvents = new ArrayList<>();
 
         // when
