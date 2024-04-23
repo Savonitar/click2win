@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option java_package = "savonitar.click2win.protobuf";
+option java_outer_classname = "GameServiceProto";
+option java_multiple_files = true;
+
+message StartRequest {
+  string requestMessage = 1;
+}
+
+message StartResponse {
+  string responseMessage = 1;
+}
+
+message ServerGameEvent {
+  int32 targetX = 1;
+  int32 targetY = 2;
+  int32 score = 3;
+  bool end = 4;
+}
+
+message PlayerEvent {
+  string responseMessage = 1;
+}
+
+message PlayerClickedEvent {
+  int32 x = 1;
+  int32 y = 2;
+}

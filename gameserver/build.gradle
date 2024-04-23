@@ -13,12 +13,25 @@ System.out.println("Gradle log")
 sourceSets {
     main {
         proto {
-            srcDir "${projectDir}/api"
+            srcDir "../api"
             System.out.println("Proto api called buildDir=${buildDir}")
             System.out.println("Proto api called projectDir=${projectDir}/api")
         }
         java {
             srcDir "../gameserver/build/generated/source/proto/main/java"
+        }
+        def folder = file('../gameserver/build/generated/source/proto/main/java')
+        def files = fileTree(folder).files
+        println "folder: ../gameserver/build/generated/source/proto/main/java"
+        files.each { file ->
+            println "File: ${file}"
+        }
+
+        def folder2 = file('.')
+        def files2 = fileTree(folder2).files
+        println "folder2: ."
+        files2.each { file ->
+            println "File: ${file}"
         }
     }
 }
