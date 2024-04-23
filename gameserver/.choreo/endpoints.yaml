@@ -6,3 +6,8 @@ endpoints:
     type: REST
     networkVisibility: Public
     context: /gamesession
+  - name: Echo Service
+      port: 8080
+      type: REST
+      networkVisibility: Public
+      context: /echo
