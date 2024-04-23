@@ -13,7 +13,7 @@ System.out.println("Gradle log")
 sourceSets {
     main {
         proto {
-            srcDir "../api"
+            srcDir "/api"
             System.out.println("Proto api called buildDir=${buildDir}")
             System.out.println("Proto api called projectDir=${projectDir}/api")
         }
