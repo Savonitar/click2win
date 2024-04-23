@@ -15,6 +15,9 @@ sourceSets {
         proto {
             srcDir '../api'
         }
+        java {
+            srcDir "../gameserver/build/generated/source/proto/main/java"
+        }
     }
 }
 
