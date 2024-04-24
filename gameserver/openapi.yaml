@@ -1,0 +1,25 @@
+openapi: 3.0.1
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /echo:
+    get:
+      tags:
+      - echo-handler
+      operationId: echo
+      parameters:
+      - name: echo
+        in: query
+        required: false
+        schema:
+          type: string
+          default: Empty echo
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+components: {}
