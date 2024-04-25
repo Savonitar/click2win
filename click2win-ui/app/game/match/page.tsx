@@ -2,6 +2,7 @@
 import { ServerGameEvent, PlayerClickedEvent } from '@/app/proto/api_pb';
 import { Message, proto3 } from "@bufbuild/protobuf";
 import React, { useState, useEffect, useRef } from 'react';
+import { apiUrl } from "../../api/constants";
 
 const Page: React.FC = () => {
   const [resp, setResp] = useState<ServerGameEvent | null>(null);
@@ -30,7 +31,9 @@ const Page: React.FC = () => {
     // const socket = new WebSocket('ws://localhost:8080/streaming');
     // http://game-session-server-491256193:8080/gamesession
     // const socket = new WebSocket('wss://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-session-server/game-session-service-cdc/v1.2');
-    const socket = new WebSocket('wss://game-session-server-491256193:8080/gamesession');
+    console.log('Trying to create a websocket')
+    console.log('Trying to create a websocket for url ${apiUrl}')
+    const socket = new WebSocket(`${apiUrl}`);
     setSocket(socket);
     socket.addEventListener('open', () => {
       console.log('WebSocket connection established');
