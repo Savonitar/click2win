@@ -28,7 +28,7 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     // const socket = new WebSocket('ws://localhost:8080/streaming');
-    const socket = new WebSocket('ws://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-session-server/game-session-service-cdc/v1.2');
+    const socket = new WebSocket('wss://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-session-server/game-session-service-cdc/v1.2');
     setSocket(socket);
     socket.addEventListener('open', () => {
       console.log('WebSocket connection established');
