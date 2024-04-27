@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-//    id 'com.google.protobuf' version '0.9.4'
+    id 'com.google.protobuf' version '0.9.4'
     id 'org.springframework.boot' version '3.2.3'
 }
 
@@ -11,29 +11,28 @@ repositories {
     mavenCentral()
 }
 
-// TODO WA to fix build problem
-//sourceSets {
-//    main {
-//        proto {
-//            srcDir "../api"
-//        }
-//    }
-//}
-//protobuf {
-//    protoc {
-//        artifact = 'com.google.protobuf:protoc:3.7.0'
-//    }
-//    plugins {
-//        grpc {
-//            artifact = 'io.grpc:protoc-gen-grpc-java:1.63.0'
-//        }
-//    }
-//    generateProtoTasks {
-//        all()*.plugins {
-//            grpc {}
-//        }
-//    }
-//}
+sourceSets {
+    main {
+        proto {
+            srcDir "../api"
+        }
+    }
+}
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.7.0'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.63.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
 
 dependencies {
     // TODO uncomment when fix chor
