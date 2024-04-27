@@ -2,7 +2,7 @@ package savonitar.click2win.gameserver;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
@@ -47,6 +47,6 @@ public class StreamingHandlerTest {
         ).block(Duration.ofSeconds(60));
 
         // then
-        Assert.assertEquals(serverGameEvents.size(), 5);
+        Assertions.assertEquals(5, serverGameEvents.size());
     }
 }
