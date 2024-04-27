@@ -1,2 +1,4 @@
 rootProject.name = 'click2win'
-include 'gameserver'
+include 'gameserver-websocket'
+include 'gameserver-grpc'
+include 'gameserver-core'
