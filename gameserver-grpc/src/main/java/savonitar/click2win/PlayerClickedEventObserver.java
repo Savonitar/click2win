@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import savonitar.click2win.protobuf.PlayerClickedEvent;
 import savonitar.click2win.protobuf.ServerGameEvent;
-import savonitar.core.GameSessionProcessor;
-import savonitar.core.PlayerGameSession;
+import savonitar.click2win.core.GameSessionProcessor;
+import savonitar.click2win.core.PlayerGameSession;
 
 @Slf4j
 @RequiredArgsConstructor

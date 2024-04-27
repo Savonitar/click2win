@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import savonitar.click2win.protobuf.ServerGameEvent;
-import savonitar.core.GameSessionProcessor;
-import savonitar.core.PlayerGameSession;
-import savonitar.core.gameplay.EventSequenceGenerator;
+import savonitar.click2win.core.GameSessionProcessor;
+import savonitar.click2win.core.PlayerGameSession;
+import savonitar.click2win.core.gameplay.EventSequenceGenerator;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
