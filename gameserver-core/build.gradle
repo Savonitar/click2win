@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    id 'com.google.protobuf' version '0.9.4'
+}
+
+group 'savonitar.click2win'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+
+sourceSets {
+    main {
+        proto {
+            srcDir "../api"
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.7.0'
+    }
+}
+
+dependencies {
+    // Google Protobuf
+    implementation 'com.google.protobuf:protobuf-java:3.7.0'
+    implementation 'com.google.protobuf:protobuf-java-util:3.7.0'
+
+    // Logging
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+
+    // Lombok
+    implementation 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // Tests
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}

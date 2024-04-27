@@ -1,4 +1,4 @@
-package savonitar.click2win.gameserver.gameplay;
+package savonitar.core.gameplay;
 
 import lombok.experimental.UtilityClass;
 import savonitar.click2win.protobuf.ServerGameEvent;
