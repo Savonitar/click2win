@@ -1,4 +1,4 @@
-package savonitar.click2win.gameserver;
+package savonitar.core.gameplay;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;

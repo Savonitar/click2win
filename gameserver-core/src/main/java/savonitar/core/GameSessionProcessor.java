@@ -1,6 +1,5 @@
 package savonitar.core;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import savonitar.click2win.protobuf.PlayerClickedEvent;
@@ -16,25 +15,17 @@ public class GameSessionProcessor {
     private final Map<PlayerGameSession, ServerGameEvent> sessionToLastTargetGameEvent;
     private final Map<PlayerGameSession, AtomicInteger> sessionToPlayerHits;
 
-    public void processClientEvent(PlayerGameSession session, byte[] payload) {
-        log.info("Received event: {}", payload);
-        PlayerClickedEvent playerClickedEvent;
-        try {
-            playerClickedEvent = PlayerClickedEvent.parseFrom(payload);
-            increaseScoreIfRequired(session, playerClickedEvent);
-            log.info("PlayerClicked: {}", playerClickedEvent);
-        } catch (InvalidProtocolBufferException e) {
-            log.error("Incorrect message received from client: {}", session, e);
-        }
+    public void processClientEvent(PlayerGameSession session, PlayerClickedEvent playerClickedEvent) {
+        increaseScoreIfRequired(session, playerClickedEvent);
     }
 
-    public byte[] calculateMatchResults(PlayerGameSession session) {
+    public ServerGameEvent calculateMatchResults(PlayerGameSession session) {
         sessionToLastTargetGameEvent.remove(session);
         int currentScore = sessionToPlayerHits.computeIfAbsent(session, ignored -> new AtomicInteger())
                 .get();
         ServerGameEvent newTargetEvent = ServerGameEventFactory.matchCompleted(currentScore);
         sessionToLastTargetGameEvent.put(session, newTargetEvent);
-        return newTargetEvent.toByteArray();
+        return newTargetEvent;
     }
 
     public byte[] transformEventToResponse(PlayerGameSession session,
