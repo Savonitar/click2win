@@ -4,6 +4,10 @@ option java_package = "savonitar.click2win.protobuf";
 option java_outer_classname = "GameServiceProto";
 option java_multiple_files = true;
 
+service GameSessionService {
+  rpc GameSession(stream PlayerClickedEvent) returns (stream ServerGameEvent);
+}
+
 message StartRequest {
   string requestMessage = 1;
 }

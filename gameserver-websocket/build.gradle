@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.3'
+}
+
+group 'savonitar.click2win'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(project(":gameserver-core"))
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.2.3'
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
+
+    // Lombok
+    implementation 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // Google Protobuf
+    implementation 'com.google.protobuf:protobuf-java:3.7.0'
+
+    // Test Dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-test:3.2.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
