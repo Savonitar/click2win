@@ -1,5 +1,6 @@
 package savonitar.click2win.gameserver.handlers;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -7,7 +8,8 @@ import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import savonitar.click2win.gameserver.EventSequenceGenerator;
+import savonitar.click2win.protobuf.PlayerClickedEvent;
+import savonitar.core.gameplay.EventSequenceGenerator;
 import savonitar.click2win.protobuf.ServerGameEvent;
 import savonitar.core.GameSessionProcessor;
 import savonitar.core.PlayerGameSession;
@@ -30,9 +32,17 @@ public class StreamingHandler implements WebSocketHandler {
 
         session.receive()
                 .doOnNext(payload -> {
+                    log.info("Received event: {}", payload);
                     final byte[] payloadBytes = new byte[payload.getPayload().readableByteCount()];
                     payload.getPayload().read(payloadBytes);
-                    gameSessionProcessor.processClientEvent(playerGameSession, payloadBytes);
+                    PlayerClickedEvent playerClickedEvent;
+                    try {
+                        playerClickedEvent = PlayerClickedEvent.parseFrom(payloadBytes);
+                        gameSessionProcessor.processClientEvent(playerGameSession, playerClickedEvent);
+                        log.info("PlayerClicked: {}", playerClickedEvent);
+                    } catch (InvalidProtocolBufferException e) {
+                        log.error("Incorrect message received from client: {}", session, e);
+                    }
                 })
                 .subscribe();
 
@@ -42,7 +52,7 @@ public class StreamingHandler implements WebSocketHandler {
                     return session.binaryMessage(dataBufferFactory -> dataBufferFactory.wrap(gameEvent));
                 }))
                 .then(session.send(Mono.fromSupplier(() -> {
-                    final byte[] matchResults = gameSessionProcessor.calculateMatchResults(playerGameSession);
+                    final byte[] matchResults = gameSessionProcessor.calculateMatchResults(playerGameSession).toByteArray();
                     return session.binaryMessage(dataBufferFactory -> dataBufferFactory.wrap(matchResults));
                 })))
                 .then(session.close())
