@@ -1,10 +1,10 @@
-package savonitar.core;
+package savonitar.click2win.core;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import savonitar.click2win.core.gameplay.ServerGameEventFactory;
 import savonitar.click2win.protobuf.PlayerClickedEvent;
 import savonitar.click2win.protobuf.ServerGameEvent;
-import savonitar.core.gameplay.ServerGameEventFactory;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,7 +20,6 @@ public class GameSessionProcessor {
     }
 
     public ServerGameEvent calculateMatchResults(PlayerGameSession session) {
-        sessionToLastTargetGameEvent.remove(session);
         int currentScore = sessionToPlayerHits.computeIfAbsent(session, ignored -> new AtomicInteger())
                 .get();
         ServerGameEvent newTargetEvent = ServerGameEventFactory.matchCompleted(currentScore);
