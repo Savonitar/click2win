@@ -5,17 +5,17 @@ endpoints:
     port: 8080
     type: REST
     networkVisibility: Public
-    context: /api/gamesession/start
+    context: /
     schemaFilePath: openapi.yaml
   - name: Next Target Event
     port: 8080
     type: REST
     networkVisibility: Public
-    context: /api/gamesession/next
+    context: /
     schemaFilePath: openapi.yaml
   - name: Player Click
     port: 8080
     type: REST
     networkVisibility: Public
-    context: /api/gamesession/click
+    context: /
     schemaFilePath: openapi.yaml
