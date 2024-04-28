@@ -1,0 +1,21 @@
+version: 0.1
+
+endpoints:
+  - name: Start New Game Session
+    port: 8080
+    type: REST
+    networkVisibility: Public
+    context: /api/gamesession/start
+    schemaFilePath: openapi.yaml
+  - name: Next Target Event
+    port: 8080
+    type: REST
+    networkVisibility: Public
+    context: /api/gamesession/next
+    schemaFilePath: openapi.yaml
+  - name: Player Click
+    port: 8080
+    type: REST
+    networkVisibility: Public
+    context: /api/gamesession/click
+    schemaFilePath: openapi.yaml
