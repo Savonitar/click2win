@@ -65,7 +65,7 @@ public class CommonConfiguration {
     }
 
     @Bean
-    public int gameSessionDurationMs(@Value("${game.session.duration:5000}") int gameSessionDurationMs) {
+    public int gameSessionDurationMs(@Value("${game.session.duration:30000}") int gameSessionDurationMs) {
         return gameSessionDurationMs;
     }
 

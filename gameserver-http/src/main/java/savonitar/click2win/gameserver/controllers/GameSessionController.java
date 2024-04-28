@@ -52,16 +52,20 @@ public class GameSessionController {
         final MatchStatus matchStatus = sessionToMatchStatus.get(playerGameSession);
         if (matchStatus == null) {
             ServerGameEvent lastGameEvent = sessionToLastTargetGameEvent.get(playerGameSession);
+            log.info("Game Completed, return last event: {}, for: {}", lastGameEvent, session);
             return ServerGameEvent.newBuilder()
                     .setScore(lastGameEvent != null ? lastGameEvent.getScore() : 0)
                     .setEnd(true)
                     .build();
         }
         if (matchStatus == MatchStatus.IN_PROGRESS) {
-            return sessionToLastTargetGameEvent.get(playerGameSession);
+            ServerGameEvent serverGameEvent = sessionToLastTargetGameEvent.get(playerGameSession);
+            log.info("Return serverGameEvent: {}, for: {}", serverGameEvent, session);
+            return serverGameEvent;
         } else {
             ServerGameEvent matchResults = gameSessionProcessor.calculateMatchResults(playerGameSession);
             sessionToMatchStatus.remove(playerGameSession);
+            log.info("Return matchResults: {}, for: {}", matchResults, session);
             return matchResults;
         }
     }
