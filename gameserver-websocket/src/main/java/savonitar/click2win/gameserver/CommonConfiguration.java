@@ -8,9 +8,9 @@ import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import savonitar.click2win.gameserver.handlers.StreamingHandler;
 import savonitar.click2win.protobuf.ServerGameEvent;
-import savonitar.core.GameSessionProcessor;
-import savonitar.core.PlayerGameSession;
-import savonitar.core.gameplay.EventSequenceGenerator;
+import savonitar.click2win.core.GameSessionProcessor;
+import savonitar.click2win.core.PlayerGameSession;
+import savonitar.click2win.core.gameplay.EventSequenceGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
