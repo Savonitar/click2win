@@ -9,10 +9,10 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import savonitar.click2win.protobuf.PlayerClickedEvent;
-import savonitar.core.gameplay.EventSequenceGenerator;
+import savonitar.click2win.core.gameplay.EventSequenceGenerator;
 import savonitar.click2win.protobuf.ServerGameEvent;
-import savonitar.core.GameSessionProcessor;
-import savonitar.core.PlayerGameSession;
+import savonitar.click2win.core.GameSessionProcessor;
+import savonitar.click2win.core.PlayerGameSession;
 
 @Slf4j
 @Component
