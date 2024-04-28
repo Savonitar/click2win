@@ -1,10 +1,10 @@
 package savonitar.click2win.core;
 
-import savonitar.click2win.core.gameplay.ServerGameEventFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import savonitar.click2win.protobuf.PlayerClickedEvent;
-import savonitar.click2win.protobuf.ServerGameEvent;
+import savonitar.click2win.core.gameplay.ServerGameEventFactory;
+import savonitar.click2win.gameserver.protobuf.PlayerClickedEvent;
+import savonitar.click2win.gameserver.protobuf.ServerGameEvent;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,7 +20,6 @@ public class GameSessionProcessor {
     }
 
     public ServerGameEvent calculateMatchResults(PlayerGameSession session) {
-        sessionToLastTargetGameEvent.remove(session);
         int currentScore = sessionToPlayerHits.computeIfAbsent(session, ignored -> new AtomicInteger())
                 .get();
         ServerGameEvent newTargetEvent = ServerGameEventFactory.matchCompleted(currentScore);
@@ -46,12 +45,14 @@ public class GameSessionProcessor {
         if (compareEvents(cachedEvent, playerClickedEvent)) {
             sessionToPlayerHits.computeIfAbsent(session, ignored -> new AtomicInteger())
                     .incrementAndGet();
+            sessionToLastTargetGameEvent.remove(session);
         }
     }
 
-    private boolean compareEvents(ServerGameEvent newTargetGameEvent, PlayerClickedEvent playerClickedEvent) {
-        return newTargetGameEvent != null && playerClickedEvent != null
-                && newTargetGameEvent.getTargetX() == playerClickedEvent.getX()
-                && newTargetGameEvent.getTargetY() == playerClickedEvent.getY();
+    private boolean compareEvents(ServerGameEvent cachedServerEvent, PlayerClickedEvent playerClickedEvent) {
+        return cachedServerEvent != null && playerClickedEvent != null
+                && cachedServerEvent.getTargetX() == playerClickedEvent.getX()
+                && cachedServerEvent.getTargetY() == playerClickedEvent.getY()
+                && !cachedServerEvent.getEnd();
     }
 }
