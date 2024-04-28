@@ -11,29 +11,28 @@ repositories {
     mavenCentral()
 }
 
-// TODO WA to fix build problem
-//sourceSets {
-//    main {
-//        proto {
-//            srcDir "../api"
-//        }
-//    }
-//}
-//protobuf {
-//    protoc {
-//        artifact = 'com.google.protobuf:protoc:3.7.0'
-//    }
-//    plugins {
-//        grpc {
-//            artifact = 'io.grpc:protoc-gen-grpc-java:1.63.0'
-//        }
-//    }
-//    generateProtoTasks {
-//        all()*.plugins {
-//            grpc {}
-//        }
-//    }
-//}
+sourceSets {
+    main {
+        proto {
+            srcDir "../api"
+        }
+    }
+}
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.7.0'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.63.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
 
 dependencies {
     // TODO uncomment when fix chor
