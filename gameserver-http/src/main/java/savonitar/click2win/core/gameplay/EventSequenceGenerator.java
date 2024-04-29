@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import savonitar.click2win.core.GameSessionProcessor;
 import savonitar.click2win.core.PlayerGameSession;
-import savonitar.click2win.gameserver.protobuf.ServerGameEvent;
+import savonitar.click2win.gameserver.events.ServerGameEvent;
 
 import java.time.Duration;
 

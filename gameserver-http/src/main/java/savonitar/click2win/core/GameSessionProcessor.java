@@ -3,8 +3,8 @@ package savonitar.click2win.core;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import savonitar.click2win.core.gameplay.ServerGameEventFactory;
-import savonitar.click2win.gameserver.protobuf.PlayerClickedEvent;
-import savonitar.click2win.gameserver.protobuf.ServerGameEvent;
+import savonitar.click2win.gameserver.events.PlayerClickedEvent;
+import savonitar.click2win.gameserver.events.ServerGameEvent;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,12 +27,6 @@ public class GameSessionProcessor {
         return newTargetEvent;
     }
 
-    public byte[] transformEventToResponse(PlayerGameSession session,
-                                           ServerGameEvent serverGameEvent) {
-        sessionToLastTargetGameEvent.put(session, serverGameEvent);
-        return serverGameEvent.toByteArray();
-    }
-
     public ServerGameEvent targetEvent(PlayerGameSession session) {
         int currentScore = sessionToPlayerHits
                 .computeIfAbsent(session, __ -> new AtomicInteger())
@@ -51,8 +45,8 @@ public class GameSessionProcessor {
 
     private boolean compareEvents(ServerGameEvent cachedServerEvent, PlayerClickedEvent playerClickedEvent) {
         return cachedServerEvent != null && playerClickedEvent != null
-                && cachedServerEvent.getTargetX() == playerClickedEvent.getX()
-                && cachedServerEvent.getTargetY() == playerClickedEvent.getY()
-                && !cachedServerEvent.getEnd();
+                && cachedServerEvent.getX() == playerClickedEvent.getX()
+                && cachedServerEvent.getY() == playerClickedEvent.getY()
+                && !cachedServerEvent.isEnd();
     }
 }

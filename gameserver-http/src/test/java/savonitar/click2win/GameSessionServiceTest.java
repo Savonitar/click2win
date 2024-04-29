@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Flux;
 import savonitar.click2win.gameserver.HTTPGameServerApplication;
-import savonitar.click2win.gameserver.protobuf.PlayerClickedEvent;
-import savonitar.click2win.gameserver.protobuf.ServerGameEvent;
+import savonitar.click2win.gameserver.events.ServerGameEvent;
+import savonitar.click2win.gameserver.events.PlayerClickedEvent;
 
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
@@ -46,17 +46,19 @@ public class GameSessionServiceTest {
 
         // when
         String session = startSession();
+        log.info("after start session");
         Flux.interval(Duration.ofMillis(500))
                 .map((Function<Long, Object>) aLong -> {
+                    log.info("tick tick");
                     ServerGameEvent serverGameEvent = serverGameEvent(session);
                     log.info("Received ServerGameEvent: {}", serverGameEvent);
                     if (serverGameEvent != null) {
-                        if (!serverGameEvent.getEnd()) {
+                        if (!serverGameEvent.isEnd()) {
                             if (!compareEvents(lastEvent.get(), serverGameEvent)) {
                                 eventsFromServer.incrementAndGet();
                             }
                             if (hits.get() < 2) {
-                                click(session, serverGameEvent.getTargetX(), serverGameEvent.getTargetY());
+                                click(session, serverGameEvent.getX(), serverGameEvent.getY());
                                 hits.incrementAndGet();
                             }
                         } else {
@@ -64,6 +66,7 @@ public class GameSessionServiceTest {
                         }
                         lastEvent.set(serverGameEvent);
                     }
+                    log.info("end tick");
                     return "";
                 })
                 .take(Duration.ofMillis(gameSessionDurationMs + 5000))
@@ -74,7 +77,7 @@ public class GameSessionServiceTest {
         assertEquals(gameSessionDurationMs / 1000, eventsFromServer.get());
         assertEquals(2, hits.get());
         assertEquals(hits.get(), lastEvent.get().getScore());
-        assertTrue(lastEvent.get().getEnd());
+        assertTrue(lastEvent.get().isEnd());
     }
 
     private String startSession() {
@@ -90,9 +93,9 @@ public class GameSessionServiceTest {
     }
 
     private PlayerClickedEvent click(String session, int x, int y) {
-        PlayerClickedEvent build = PlayerClickedEvent.newBuilder()
-                .setX(x)
-                .setY(y)
+        PlayerClickedEvent build = PlayerClickedEvent.builder()
+                .x(x)
+                .y(y)
                 .build();
         ResponseEntity<PlayerClickedEvent> serverGameEvent = restTemplate.postForEntity(getUrlClick(session), build, PlayerClickedEvent.class);
         log.info("Click ServerGameEvent={}", serverGameEvent.getBody());
@@ -109,6 +112,7 @@ public class GameSessionServiceTest {
 
     private String getUrlNext(String session) {
         return getBaseUrl() + "next?session=" + session;
+//        return getBaseUrl() + "next";
     }
 
     private String getUrlClick(String session) {
@@ -117,7 +121,7 @@ public class GameSessionServiceTest {
 
     private boolean compareEvents(ServerGameEvent newTargetGameEvent, ServerGameEvent previousTargetEvent) {
         return newTargetGameEvent != null && previousTargetEvent != null
-                && newTargetGameEvent.getTargetX() == previousTargetEvent.getTargetX()
-                && newTargetGameEvent.getTargetY() == previousTargetEvent.getTargetY();
+                && newTargetGameEvent.getX() == previousTargetEvent.getX()
+                && newTargetGameEvent.getY() == previousTargetEvent.getY();
     }
 }
