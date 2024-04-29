@@ -1,4 +1,4 @@
-version: 0.1
+version: 0.2
 
 endpoints:
   - name: Start New Game Session
@@ -14,6 +14,18 @@ endpoints:
     context: /
     schemaFilePath: openapi.yaml
   - name: Player Click
+    port: 8080
+    type: REST
+    networkVisibility: Public
+    context: /
+    schemaFilePath: openapi.yaml
+  - name: Player Rating
+    port: 8080
+    type: REST
+    networkVisibility: Public
+    context: /
+    schemaFilePath: openapi.yaml
+  - name: Top Players
     port: 8080
     type: REST
     networkVisibility: Public

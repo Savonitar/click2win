@@ -8,13 +8,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.client.RestTemplate;
 import savonitar.click2win.core.GameSessionProcessor;
 import savonitar.click2win.core.PlayerGameSession;
 import savonitar.click2win.core.gameplay.EventSequenceGenerator;
+import savonitar.click2win.database.PlayerRepository;
+import savonitar.click2win.database.PlayerService;
 import savonitar.click2win.gameserver.MatchStatus;
 import savonitar.click2win.gameserver.events.ServerGameEvent;
 
+import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,12 +34,22 @@ public class CommonConfiguration {
     }
 
     @Bean
-    public String postgresAddress() {
-        String pgAddress = System.getProperty("postgres_host", "");
-        String pgAddressEnv = System.getenv("postgres_host");
-        log.info("Postgres address={}", pgAddress);
-        log.info("Postgres address env={}", pgAddressEnv);
-        return pgAddress;
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        String postgresPass = System.getenv("postgres_pass");
+        String postgresUser = System.getenv("postgres_user");
+        String postgresUrl = System.getenv("postgres_url");
+        String postgresPort = System.getenv("postgres_port");
+        final String pgConnectionString = "jdbc:postgresql://"
+                + postgresUrl
+                + ":" + postgresPort
+                + "/players";
+        log.info("pgConnectionString: {}", pgConnectionString);
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUrl(pgConnectionString);
+        dataSource.setUsername(postgresUser);
+        dataSource.setPassword(postgresPass);
+        return dataSource;
     }
 
     @Bean
@@ -57,6 +71,11 @@ public class CommonConfiguration {
     @Bean
     public Map<PlayerGameSession, ServerGameEvent> sessionToLastTargetGameEvent() {
         return new ConcurrentHashMap<>();
+    }
+
+    @Bean
+    public PlayerService playerService(PlayerRepository playerRepository) {
+        return new PlayerService(playerRepository);
     }
 
     @Bean

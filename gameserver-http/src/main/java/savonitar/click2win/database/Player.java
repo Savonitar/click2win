@@ -1,7 +1,9 @@
 package savonitar.click2win.database;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "players")
 public class Player {
