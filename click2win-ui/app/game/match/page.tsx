@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
- 
 type PlayerClickedEvent = {
   x: number;
   y: number;
@@ -17,7 +16,6 @@ type ServerGameEvent = {
 const Page: React.FC = () => {
   const apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/gamesession'
   // const apiUrl = 'http://localhost:8080/api/gamesession';
-
   const router = useRouter(); 
   const [resp, setResp] = useState<ServerGameEvent | null>(null);
   const [playerName, setPlayerName] = useState<string>('Default');
@@ -85,7 +83,7 @@ const Page: React.FC = () => {
       setErrorMessage('Match error');
     }
   };
-  
+
   const runAsyncTasks = async () => {
     const sessionId = await fetchSession();
     // fetchEvents(sessionId);
@@ -117,7 +115,7 @@ const Page: React.FC = () => {
       setErrorMessage('Match error');
     }
   };
-
+  
   const handleLeaveMatch = () => {
     router.push('/');
   };
