@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import savonitar.click2win.core.GameSessionProcessor;
 import savonitar.click2win.core.PlayerGameSession;
 import savonitar.click2win.core.gameplay.EventSequenceGenerator;
+import savonitar.click2win.database.Player;
+import savonitar.click2win.database.PlayerService;
 import savonitar.click2win.gameserver.MatchStatus;
 import savonitar.click2win.gameserver.events.PlayerClickedEvent;
 import savonitar.click2win.gameserver.events.ServerGameEvent;
@@ -17,6 +19,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/gamesession")
 public class GameSessionController {
+
+    @Autowired
+    private PlayerService playerService;
 
     @Autowired
     private GameSessionProcessor gameSessionProcessor;
@@ -31,8 +36,9 @@ public class GameSessionController {
     private EventSequenceGenerator eventSequenceGenerator;
 
     @PostMapping("/start")
-    public String startSession() {
+    public String startSession(@RequestParam String player) {
         final PlayerGameSession playerGameSession = new PlayerGameSession(UUID.randomUUID().toString());
+        String playerName = player == null ? "default" : player;
         log.info("Start new session: {}", playerGameSession);
         sessionToMatchStatus.put(playerGameSession, MatchStatus.IN_PROGRESS);
         eventSequenceGenerator.serverEventSequenceGenerator(playerGameSession, gameSessionProcessor)
@@ -42,6 +48,15 @@ public class GameSessionController {
                 })
                 .doOnComplete(() -> {
                     log.info("Session completed for: {}", playerGameSession);
+                    try {
+                        Player newPlayer = new Player();
+                        ServerGameEvent matchResults = gameSessionProcessor.calculateMatchResults(playerGameSession);
+                        newPlayer.setPlayerName(playerName);
+                        newPlayer.setRating(matchResults.getScore());
+                        playerService.savePlayer(newPlayer);
+                    } catch (Exception ex) {
+                        log.error("Can't save player", ex);
+                    }
                     sessionToMatchStatus.put(playerGameSession, MatchStatus.COMPLETED);
                 })
                 .subscribe();

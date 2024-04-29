@@ -1,10 +1,19 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/navigation';
 
+type Player = {
+  userId: number;
+  playerName: string;
+  rating: number;
+}
+
 const HomePage: React.FC = () => {
+  const apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/player'
   const [name, setName] = useState('');
+  const [error, setError] = useState<boolean>(false);
+  const [players, setPlayers] = useState<Player[]>([]);
   const router = useRouter();
 
   const handleStartGame = () => {
@@ -14,6 +23,24 @@ const HomePage: React.FC = () => {
       alert('Please enter your name before starting the game.');
     }
   };
+
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        const response = await fetch(apiUrl + '/top');
+        if (!response.ok) {
+          throw new Error('Failed to fetch player data');
+        }
+        const data = await response.json();
+        setPlayers(data);
+      } catch (error) {
+        console.error('Error fetching players:', error);
+        setError(true);
+      }
+    };
+
+    fetchPlayers();
+  }, []);
 
   const handleCheckPlayerRating = () => {
     if (name.trim() !== '') {
@@ -56,30 +83,28 @@ const HomePage: React.FC = () => {
         </p>
 
         <div className="leaderboard-container">
-          <h2 className="leaderboard-title">Top 3 Players</h2>
-          <table className="leaderboard">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Rating</th>
+      <h2 className="leaderboard-title">Top 3 Players</h2>
+      {error ? (
+        <p>Database is on maintenance. Please try again later.</p>
+      ) : (
+        <table className="leaderboard">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            {players.slice(0, 3).map((player) => (
+              <tr key={player.userId}>
+                <td>{player.playerName}</td>
+                <td>{player.rating}</td>
               </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Player 1</td>
-                <td>1200</td>
-              </tr>
-              <tr>
-                <td>Player 2</td>
-                <td>1100</td>
-              </tr>
-              <tr>
-                <td>Player 3</td>
-                <td>1050</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
       </main>
 
       <style jsx>{`
