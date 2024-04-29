@@ -30,7 +30,7 @@ public class GameSessionController {
     @Autowired
     private EventSequenceGenerator eventSequenceGenerator;
 
-    @PostMapping(value = "/start")
+    @PostMapping("/start")
     public String startSession() {
         final PlayerGameSession playerGameSession = new PlayerGameSession(UUID.randomUUID().toString());
         log.info("Start new session: {}", playerGameSession);
@@ -48,7 +48,7 @@ public class GameSessionController {
         return playerGameSession.sessionId();
     }
 
-    @GetMapping(value = "/next")
+    @GetMapping("/next")
     public ServerGameEvent nextTarget(@RequestParam String session) {
         log.info("NextTarget required for: {}", session);
         final PlayerGameSession playerGameSession = new PlayerGameSession(session);
@@ -73,7 +73,7 @@ public class GameSessionController {
         }
     }
 
-    @PostMapping(value = "/click")
+    @PostMapping("/click")
     public void playerClick(@RequestBody PlayerClickedEvent playerClickedEvent, @RequestParam String session) {
         log.info("PlayerClicked: {}, session: {}", playerClickedEvent, session);
         PlayerGameSession playerGameSession = new PlayerGameSession(session);

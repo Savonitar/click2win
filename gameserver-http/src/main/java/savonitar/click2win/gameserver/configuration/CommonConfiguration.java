@@ -1,5 +1,6 @@
 package savonitar.click2win.gameserver.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
@@ -19,12 +20,22 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Slf4j
 @Configuration
 public class CommonConfiguration {
 
     @Bean
     public ServletWebServerFactory servletWebServerFactory() {
         return new TomcatServletWebServerFactory();
+    }
+
+    @Bean
+    public String postgresAddress() {
+        String pgAddress = System.getProperty("postgres_host", "");
+        String pgAddressEnv = System.getenv("postgres_host");
+        log.info("Postgres address={}", pgAddress);
+        log.info("Postgres address env={}", pgAddressEnv);
+        return pgAddress;
     }
 
     @Bean
