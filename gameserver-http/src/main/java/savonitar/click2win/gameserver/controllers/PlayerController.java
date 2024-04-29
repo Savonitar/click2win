@@ -8,6 +8,7 @@ import java.util.Random;
 
 @RestController("/api/player")
 public class PlayerController {
+
     @GetMapping("rating")
     public Integer playerRating(@RequestParam String playerName) {
         Random random = new Random();
