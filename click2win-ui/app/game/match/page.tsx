@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-// import { apiUrl } from "../../api/constants";
+import { useRouter } from 'next/navigation';
+ 
 type PlayerClickedEvent = {
   x: number;
   y: number;
@@ -16,7 +17,10 @@ type ServerGameEvent = {
 const Page: React.FC = () => {
   const apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/gamesession'
   // const apiUrl = 'http://localhost:8080/api/gamesession';
+
+  const router = useRouter(); 
   const [resp, setResp] = useState<ServerGameEvent | null>(null);
+  const [playerName, setPlayerName] = useState<string>('Default');
   const [session, setSession] = useState<string>('');
   const [timer, setTimer] = useState(60);
   const [score, setScore] = useState(0);
@@ -42,10 +46,15 @@ const Page: React.FC = () => {
   // });
 
   useEffect(() => {
+    const queryString = window.location.search;
+    const queryParams = new URLSearchParams(queryString);
+    const playerName = queryParams.get('player')?? "default";
+    console.log("player name is " + playerName)
+    setPlayerName(playerName);
     const fetchSession = async () => {
       let sessionId = 'empty';
       try {
-        const response = await fetch(apiUrl+"/start", {
+        const response = await fetch(apiUrl+"/start?player="+playerName, {
           method: 'POST'
         });
         sessionId = await response.text();
@@ -76,6 +85,7 @@ const Page: React.FC = () => {
       setErrorMessage('Match error');
     }
   };
+  
   const runAsyncTasks = async () => {
     const sessionId = await fetchSession();
     // fetchEvents(sessionId);
@@ -107,50 +117,66 @@ const Page: React.FC = () => {
       setErrorMessage('Match error');
     }
   };
+
+  const handleLeaveMatch = () => {
+    router.push('/');
+  };
   
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -100%)' }}>
-        <p>Timer: {timer}    </p>
-        <p>Score: {score}</p>
-      </div>
-      {gameOver && (
-        <div style={{ position: 'absolute', top: '20%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
-          <h1>{errorMessage || 'Match completed'}</h1>
-          <p>Score: {score}</p>
-        </div>
-      )}
-      <div 
-        id="gameField"
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '500px',
-          height: '500px',
-          border: '1px solid black',
-          backgroundColor: '#f0f0f0'
-        }}
-      >
-        {resp && (
-          <button 
-            id="targetButton"
-            style={{
-              position: 'absolute',
-              left: `${resp.x}px`,
-              top: `${resp.y}px`
-            }}
-            onClick={() => handleClick(resp.x, resp.y)}
-          >
-            CLICK ME
-          </button>
-        )}
-      </div>
-      <button style={{ position: 'absolute', top: '90%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: gameOver ? 'green' : 'red' }}>
-        {gameOver ? 'Return to main page' : 'Leave match'}
-      </button>
+    <div style={{ position: 'relative', textAlign: 'center', fontFamily: 'Arial, sans-serif', minHeight: '100vh', paddingTop: '20px' }}>
+    <div style={{ marginBottom: '20px' }}>
+      <p style={{ fontSize: '20px', fontWeight: 'bold' }}>Timer: {timer}</p>
+      <p style={{ fontSize: '20px', fontWeight: 'bold' }}>Score: {score}</p>
     </div>
+    {gameOver && (
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <h1 style={{ fontSize: '24px', color: 'red' }}>{errorMessage || 'Match completed'}</h1>
+        <p style={{ fontSize: '18px' }}>Final Score: {score}</p>
+      </div>
+    )}
+    <div 
+      id="gameField"
+      style={{
+        position: 'relative',
+        width: '500px',
+        height: '500px',
+        margin: '0 auto',
+        border: '1px solid black',
+        backgroundColor: '#f0f0f0',
+        marginBottom: '20px'
+      }}
+    >
+      {resp && (
+        <button 
+          id="targetButton"
+          style={{
+            position: 'absolute',
+            left: `${resp.x}px`,
+            top: `${resp.y}px`
+          }}
+          onClick={() => handleClick(resp.x, resp.y)}
+        >
+          CLICK ME
+        </button>
+      )}
+    </div>
+    <p style={{ fontSize: '20px', marginBottom: '20px' }}>
+      Playername: {playerName}
+    </p>
+    <button 
+      style={{
+        backgroundColor: gameOver ? 'green' : 'red',
+        color: 'white',
+        fontSize: '16px',
+        padding: '10px 20px',
+        borderRadius: '5px',
+        cursor: 'pointer'
+      }}
+      onClick={handleLeaveMatch}
+    >
+      {gameOver ? 'Return to main page' : 'Leave match'}
+    </button>
+  </div>
   );
 };
 
