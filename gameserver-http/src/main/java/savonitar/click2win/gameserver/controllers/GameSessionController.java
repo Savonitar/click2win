@@ -7,8 +7,8 @@ import savonitar.click2win.core.GameSessionProcessor;
 import savonitar.click2win.core.PlayerGameSession;
 import savonitar.click2win.core.gameplay.EventSequenceGenerator;
 import savonitar.click2win.gameserver.MatchStatus;
-import savonitar.click2win.gameserver.protobuf.PlayerClickedEvent;
-import savonitar.click2win.gameserver.protobuf.ServerGameEvent;
+import savonitar.click2win.gameserver.events.PlayerClickedEvent;
+import savonitar.click2win.gameserver.events.ServerGameEvent;
 
 import java.util.Map;
 import java.util.UUID;
@@ -36,7 +36,10 @@ public class GameSessionController {
         log.info("Start new session: {}", playerGameSession);
         sessionToMatchStatus.put(playerGameSession, MatchStatus.IN_PROGRESS);
         eventSequenceGenerator.serverEventSequenceGenerator(playerGameSession, gameSessionProcessor)
-                .doOnNext(serverGameEvent -> sessionToLastTargetGameEvent.put(playerGameSession, serverGameEvent))
+                .doOnNext(serverGameEvent -> {
+                    sessionToLastTargetGameEvent.put(playerGameSession, serverGameEvent);
+                    log.info("New event placed: {}, for: {}", serverGameEvent, playerGameSession);
+                })
                 .doOnComplete(() -> {
                     log.info("Session completed for: {}", playerGameSession);
                     sessionToMatchStatus.put(playerGameSession, MatchStatus.COMPLETED);
@@ -45,7 +48,7 @@ public class GameSessionController {
         return playerGameSession.sessionId();
     }
 
-    @GetMapping(value = "/next", produces = {"application/x-protobuf"})
+    @GetMapping(value = "/next")
     public ServerGameEvent nextTarget(@RequestParam String session) {
         log.info("NextTarget required for: {}", session);
         final PlayerGameSession playerGameSession = new PlayerGameSession(session);
@@ -53,9 +56,9 @@ public class GameSessionController {
         if (matchStatus == null) {
             ServerGameEvent lastGameEvent = sessionToLastTargetGameEvent.get(playerGameSession);
             log.info("Game Completed, return last event: {}, for: {}", lastGameEvent, session);
-            return ServerGameEvent.newBuilder()
-                    .setScore(lastGameEvent != null ? lastGameEvent.getScore() : 0)
-                    .setEnd(true)
+            return ServerGameEvent.builder()
+                    .score(lastGameEvent != null ? lastGameEvent.getScore() : 0)
+                    .end(true)
                     .build();
         }
         if (matchStatus == MatchStatus.IN_PROGRESS) {
@@ -70,7 +73,7 @@ public class GameSessionController {
         }
     }
 
-    @PostMapping(value = "/click", consumes = {"application/x-protobuf"})
+    @PostMapping(value = "/click")
     public void playerClick(@RequestBody PlayerClickedEvent playerClickedEvent, @RequestParam String session) {
         log.info("PlayerClicked: {}, session: {}", playerClickedEvent, session);
         PlayerGameSession playerGameSession = new PlayerGameSession(session);

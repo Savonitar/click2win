@@ -6,13 +6,13 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import savonitar.click2win.core.GameSessionProcessor;
 import savonitar.click2win.core.PlayerGameSession;
 import savonitar.click2win.core.gameplay.EventSequenceGenerator;
 import savonitar.click2win.gameserver.MatchStatus;
-import savonitar.click2win.gameserver.protobuf.ServerGameEvent;
+import savonitar.click2win.gameserver.events.ServerGameEvent;
 
 import java.util.List;
 import java.util.Map;
@@ -23,19 +23,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CommonConfiguration {
 
     @Bean
-    public ProtobufHttpMessageConverter protobufHttpMessageConverter() {
-        return new ProtobufHttpMessageConverter();
-    }
-
-    @Bean
     public ServletWebServerFactory servletWebServerFactory() {
         return new TomcatServletWebServerFactory();
     }
 
     @Bean
-    public RestTemplate restTemplate(ProtobufHttpMessageConverter protobufHttpMessageConverter,
-                                     StringHttpMessageConverter stringHttpMessageConverter) {
-        return new RestTemplate(List.of(protobufHttpMessageConverter, stringHttpMessageConverter));
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        return new MappingJackson2HttpMessageConverter();
+    }
+
+    @Bean
+    public RestTemplate restTemplate(StringHttpMessageConverter stringHttpMessageConverter,
+                                     MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
+        return new RestTemplate(List.of(stringHttpMessageConverter, mappingJackson2HttpMessageConverter));
     }
 
     @Bean
