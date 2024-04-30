@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/navigation';
+import { apiUrl } from './api/constants';
 
 type Player = {
   userId: number;
@@ -10,22 +11,72 @@ type Player = {
 }
 
 const HomePage: React.FC = () => {
-  const apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/player'
   const [name, setName] = useState('');
+  const [apiUrl, SetUrl] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
   const [players, setPlayers] = useState<Player[]>([]);
+  const [topPlayersCount, setTopPlayersCount] = useState<number | null>(null);
+  const [playerRating, setPlayerRating] = useState<number>(0);
   const router = useRouter();
 
   const handleStartGame = () => {
     if (name.trim() !== '') {
-      router.push('/game/match?player='+name);
+      router.push('/game/match?player=' + name);
     } else {
       alert('Please enter your name before starting the game.');
     }
   };
 
+  const handleCheckPlayerRating = async () => {
+    if (name.trim() !== '') {
+      try {
+        const response = await fetch(apiUrl + '/rating?playerName=' + name);
+        if (!response.ok) {
+          throw new Error('Failed to fetch player rating');
+        }
+        const rating = await response.json();
+        setPlayerRating(rating);
+        alert('Rating of ' + name + ' is ' + rating);
+      } catch (error) {
+        console.error('Error fetching player rating:', error);
+        setError(true);
+      }
+    } else {
+      alert('Please enter the player name to check their rating.');
+    }
+  };
+
   useEffect(() => {
-    const fetchPlayers = async () => {
+    const queryString = window.location.search;
+    const queryParams = new URLSearchParams(queryString);
+    const playerName = queryParams.get('player')?? "default";
+    console.log("player name is " + playerName)
+    const env = queryParams.get('env')?? "prod";
+    var apiUrl: string;
+    if(env === "prod") {
+      apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-prod.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/player-click-5c6/v1.0/api/player'
+    } else if (env === "dev"){
+      apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/player';
+    } else {
+      apiUrl = 'http://localhost:8080/api/player';
+    }
+    SetUrl(apiUrl)
+
+    const fetchPlayerCount = async () => {
+      try {
+        const response = await fetch(apiUrl + '/count');
+        if (!response.ok) {
+          throw new Error('Failed to fetch player count');
+        }
+        const count = await response.json();
+        setTopPlayersCount(count);
+      } catch (error) {
+        console.error('Error fetching player count:', error);
+        setError(true);
+      }
+    };
+
+    const fetchTopPlayers = async () => {
       try {
         const response = await fetch(apiUrl + '/top');
         if (!response.ok) {
@@ -39,16 +90,9 @@ const HomePage: React.FC = () => {
       }
     };
 
-    fetchPlayers();
+    fetchPlayerCount();
+    fetchTopPlayers();
   }, []);
-
-  const handleCheckPlayerRating = () => {
-    if (name.trim() !== '') {
-      alert('Rating is ');
-    } else {
-      alert('Please enter the player name to check their rating.');
-    }
-  };
 
   return (
     <div className="container">
@@ -74,37 +118,36 @@ const HomePage: React.FC = () => {
           <button className="btn" onClick={handleStartGame}>
             Start the match
           </button>
-        </p>
-
-        <p className="description">
           <button className="btn" onClick={handleCheckPlayerRating}>
             Show The Player Rating
           </button>
         </p>
 
         <div className="leaderboard-container">
-      <h2 className="leaderboard-title">Top 3 Players</h2>
-      {error ? (
-        <p>Database is on maintenance. Please try again later.</p>
-      ) : (
-        <table className="leaderboard">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Rating</th>
-            </tr>
-          </thead>
-          <tbody>
-            {players.slice(0, 3).map((player) => (
-              <tr key={player.userId}>
-                <td>{player.playerName}</td>
-                <td>{player.rating}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+          {topPlayersCount !== null && (
+            <h2 className="leaderboard-title">Top {topPlayersCount} Players</h2>
+          )}
+          {error ? (
+            <p>Database is on maintenance. Top Players information is not available.</p>
+          ) : (
+            <table className="leaderboard">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Rating</th>
+                </tr>
+              </thead>
+              <tbody>
+                {players.slice(0, topPlayersCount || 3).map((player) => (
+                  <tr key={player.userId}>
+                    <td>{player.playerName}</td>
+                    <td>{player.rating}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </main>
 
       <style jsx>{`
@@ -149,6 +192,7 @@ const HomePage: React.FC = () => {
           text-decoration: none;
           font-size: 1.2rem;
           cursor: pointer;
+          margin-right: 1rem;
         }
 
         .leaderboard-container {
