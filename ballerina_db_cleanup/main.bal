@@ -12,18 +12,18 @@ public function main() returns error? {
         return error("Missing environment variables");
     }
 
-    endpoint jdbc:Client dbClient {
+    jdbc:Client dbClient = check new ({
         url: jdbcUrl,
         username: username,
         password: password,
         dbOptions: { ssl: true }
-    };
+    });
 
     string selectQuery = "SELECT user_id, playername FROM players";
     string updateQuery = "UPDATE players SET playername = ? WHERE user_id = ?";
 
     var result = dbClient->select(selectQuery);
-    check resultError = result.error();
+    error? resultError = result.error();
 
     while (result.hasNext()) {
         var row = result.getNext();
@@ -35,7 +35,7 @@ public function main() returns error? {
 
             var updateParams = [newPlayerName, userId];
             var updateResult = dbClient->update(updateQuery, updateParams);
-            check updateError = updateResult.error();
+            error? updateError = updateResult.error();
 
             if (updateError != null) {
                 io:println("Error updating player with ID: " + userId + ", Error: " + updateError);
