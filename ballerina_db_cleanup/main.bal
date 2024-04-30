@@ -3,9 +3,9 @@ import ballerina/os;
 import ballerinax/java.jdbc;
 
 public function main() returns error? {
-    string? jdbcUrl = os:getenv("postgress_url");
-    string? username = os:getenv("postgress_user");
-    string? password = os:getenv("postgress_pass");
+    string? jdbcUrl = os:getEnv("postgress_url");
+    string? username = os:getEnv("postgress_user");
+    string? password = os:getEnv("postgress_pass");
 
     if (jdbcUrl == null || username == null || password == null) {
         io:println("One or more required environment variables are not set.");
