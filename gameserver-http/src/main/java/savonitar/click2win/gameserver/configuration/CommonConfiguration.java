@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.web.client.RestTemplate;
 import savonitar.click2win.core.GameSessionProcessor;
 import savonitar.click2win.core.PlayerGameSession;
@@ -49,7 +50,7 @@ public class CommonConfiguration {
         dataSource.setUrl(pgConnectionString);
         dataSource.setUsername(postgresUser);
         dataSource.setPassword(postgresPass);
-        return dataSource;
+        return new LazyConnectionDataSourceProxy(dataSource);
     }
 
     @Bean
@@ -95,7 +96,7 @@ public class CommonConfiguration {
     }
 
     @Bean
-    public int gameSessionDurationMs(@Value("${game.session.duration:30000}") int gameSessionDurationMs) {
+    public int gameSessionDurationMs(@Value("${game.session.duration:15000}") int gameSessionDurationMs) {
         return gameSessionDurationMs;
     }
 

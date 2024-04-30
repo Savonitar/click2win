@@ -11,8 +11,8 @@ public class ServerGameEventFactory {
     public static ServerGameEvent newTargetEvent(int score) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         return ServerGameEvent.builder()
-                .x(random.nextInt(100))
-                .y(random.nextInt(100))
+                .x(random.nextInt(420))
+                .y(random.nextInt(420))
                 .score(score)
                 .end(false)
                 .build();

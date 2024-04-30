@@ -36,6 +36,9 @@ public class GameSessionServiceTest {
     @Autowired
     private int gameSessionDurationMs;
 
+    @Autowired
+    private int eventGenerationIntervalMs;
+
     @Test
     public void client_subscribes_and_gets_proper_number_of_events() throws InterruptedException {
         // given
@@ -46,10 +49,8 @@ public class GameSessionServiceTest {
 
         // when
         String session = startSession();
-        log.info("after start session");
-        Flux.interval(Duration.ofMillis(500))
+        Flux.interval(Duration.ofMillis(eventGenerationIntervalMs/2))
                 .map((Function<Long, Object>) aLong -> {
-                    log.info("tick tick");
                     ServerGameEvent serverGameEvent = serverGameEvent(session);
                     log.info("Received ServerGameEvent: {}", serverGameEvent);
                     if (serverGameEvent != null) {
@@ -66,7 +67,6 @@ public class GameSessionServiceTest {
                         }
                         lastEvent.set(serverGameEvent);
                     }
-                    log.info("end tick");
                     return "";
                 })
                 .take(Duration.ofMillis(gameSessionDurationMs + 5000))
@@ -74,7 +74,7 @@ public class GameSessionServiceTest {
                 .subscribe();
         sessionLatch.await(gameSessionDurationMs + 5000, TimeUnit.MILLISECONDS);
 
-        assertEquals(gameSessionDurationMs / 1000, eventsFromServer.get());
+        assertEquals(gameSessionDurationMs / eventGenerationIntervalMs, eventsFromServer.get());
         assertEquals(2, hits.get());
         assertEquals(hits.get(), lastEvent.get().getScore());
         assertTrue(lastEvent.get().isEnd());
@@ -107,12 +107,11 @@ public class GameSessionServiceTest {
     }
 
     private String getUrlStartSession() {
-        return getBaseUrl() + "start";
+        return getBaseUrl() + "start?player=test";
     }
 
     private String getUrlNext(String session) {
         return getBaseUrl() + "next?session=" + session;
-//        return getBaseUrl() + "next";
     }
 
     private String getUrlClick(String session) {
