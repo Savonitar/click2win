@@ -27,4 +27,8 @@ public class PlayerService {
     public List<Player> getTopPlayers() {
         return playerRepository.findTopPlayers();
     }
+
+    public Long count() {
+        return playerRepository.count();
+    }
 }

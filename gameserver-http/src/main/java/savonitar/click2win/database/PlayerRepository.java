@@ -10,6 +10,6 @@ import java.util.List;
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     Player findByPlayerName(String playerName);
 
-    @Query(value = "SELECT playername, rating FROM players ORDER BY rating DESC LIMIT 3", nativeQuery = true)
+    @Query(value = "SELECT * FROM players ORDER BY rating DESC LIMIT 3", nativeQuery = true)
     List<Player> findTopPlayers();
 }
