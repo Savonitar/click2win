@@ -11,6 +11,12 @@ paths:
       tags:
         - game-session-controller
       operationId: startSession
+      parameters:
+        - name: player
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -38,7 +44,7 @@ paths:
       responses:
         "200":
           description: OK
-  /top:
+  /api/player/top:
     get:
       tags:
         - player-controller
@@ -52,7 +58,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Player'
-  /rating:
+  /api/player/rating:
     get:
       tags:
         - player-controller
@@ -71,6 +77,19 @@ paths:
               schema:
                 type: integer
                 format: int32
+  /api/player/count:
+    get:
+      tags:
+        - player-controller
+      operationId: countPlayers
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: integer
+                format: int64
   /api/gamesession/next:
     get:
       tags:
@@ -102,6 +121,15 @@ components:
           format: int32
     Player:
       type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        playerName:
+          type: string
+        rating:
+          type: integer
+          format: int32
     ServerGameEvent:
       type: object
       properties:
