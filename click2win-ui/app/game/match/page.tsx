@@ -14,7 +14,18 @@ type ServerGameEvent = {
 };
 
 const Page: React.FC = () => {
-  const apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/gamesession'
+  const queryString = window.location.search;
+  const queryParams = new URLSearchParams(queryString);
+  const env = queryParams.get('env')?? "prod";
+  var apiUrl: string;
+  if(env === "prod") {
+    apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.prod/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/gamesession'
+  } else if (env === "dev"){
+    apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/gamesession';
+  } else {
+    apiUrl = 'http://localhost:8080/api/gamesession';
+  }
+  // const apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/gamesession'
   // const apiUrl = 'http://localhost:8080/api/gamesession';
   const router = useRouter(); 
   const [resp, setResp] = useState<ServerGameEvent | null>(null);
@@ -70,7 +81,7 @@ const Page: React.FC = () => {
     try {
       console.log("call "+ apiUrl+"/next?session="+session);
       const response = await fetch(apiUrl+"/next?session="+session);
-      const randomEvent: ServerGameEvent = await response.json(); // Get the response as an ArrayBuffer
+      const randomEvent: ServerGameEvent = await response.json();
       console.log('ServerGameEvent received: ', randomEvent);
       console.log(`ServerGameEvent x: ${randomEvent.x}, y: ${randomEvent.y}, score: ${randomEvent.score}, end: ${randomEvent.end}`);
       if (randomEvent.score) {
