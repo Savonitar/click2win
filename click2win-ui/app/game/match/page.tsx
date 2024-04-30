@@ -14,24 +14,12 @@ type ServerGameEvent = {
 };
 
 const Page: React.FC = () => {
-  const queryString = window.location.search;
-  const queryParams = new URLSearchParams(queryString);
-  const env = queryParams.get('env')?? "prod";
-  var apiUrl: string;
-  if(env === "prod") {
-    apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.prod/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/gamesession'
-  } else if (env === "dev"){
-    apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/gamesession';
-  } else {
-    apiUrl = 'http://localhost:8080/api/gamesession';
-  }
-  // const apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/gamesession'
-  // const apiUrl = 'http://localhost:8080/api/gamesession';
   const router = useRouter(); 
   const [resp, setResp] = useState<ServerGameEvent | null>(null);
   const [playerName, setPlayerName] = useState<string>('Default');
   const [session, setSession] = useState<string>('');
-  const [timer, setTimer] = useState(60);
+  const [apiUrl, SetUrl] = useState<string>('');
+  const [timer, setTimer] = useState(15);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -50,15 +38,22 @@ const Page: React.FC = () => {
     return () => clearInterval(countdown);
   }, []);
 
-  // useEffect(function mount() {
-  //   console.log('window.configs=' + window?.configs?.apiUrl ? window.configs.apiUrl : "/");
-  // });
-
   useEffect(() => {
     const queryString = window.location.search;
     const queryParams = new URLSearchParams(queryString);
     const playerName = queryParams.get('player')?? "default";
     console.log("player name is " + playerName)
+    const env = queryParams.get('env')?? "prod";
+    var apiUrl: string;
+    if(env === "prod") {
+      apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-prod.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/player-click-5c6/v1.0/api/gamesession'
+    } else if (env === "dev"){
+      apiUrl ='https://4609d7e8-cc66-4077-9781-04910e97ccb3-dev.e1-us-cdp-2.choreoapis.dev/dxxo/game-server-http/start-new-game-session-5c6/v1.0/api/gamesession';
+    } else {
+      apiUrl = 'http://localhost:8080/api/gamesession';
+    }
+    SetUrl(apiUrl);
+    console.log("apiUrl " + apiUrl)
     setPlayerName(playerName);
     const fetchSession = async () => {
       let sessionId = 'empty';
@@ -69,6 +64,8 @@ const Page: React.FC = () => {
         sessionId = await response.text();
         console.log('session from server: ' + sessionId)
         setSession(sessionId);
+        setErrorMessage('');
+        setGameOver(false);
       } catch (error) {
         console.error('Error starting new session:', error);
         setGameOver(true);
@@ -79,10 +76,9 @@ const Page: React.FC = () => {
   
     const fetchEvents = async (session: string) => {
     try {
-      console.log("call "+ apiUrl+"/next?session="+session);
-      const response = await fetch(apiUrl+"/next?session="+session);
+      console.log("call "+ apiUrl + "/next?session="+session);
+      const response = await fetch(apiUrl + "/next?session="+session);
       const randomEvent: ServerGameEvent = await response.json();
-      console.log('ServerGameEvent received: ', randomEvent);
       console.log(`ServerGameEvent x: ${randomEvent.x}, y: ${randomEvent.y}, score: ${randomEvent.score}, end: ${randomEvent.end}`);
       if (randomEvent.score) {
         setScore(randomEvent.score);
@@ -90,15 +86,14 @@ const Page: React.FC = () => {
       setResp(randomEvent);
     } catch (error) {
       console.error('Error fetching events:', error);
-      setGameOver(true);
-      setErrorMessage('Match error');
+      // setGameOver(true);
+      // setErrorMessage('Match error');
     }
   };
 
   const runAsyncTasks = async () => {
     const sessionId = await fetchSession();
-    // fetchEvents(sessionId);
-    const interval = setInterval(() => fetchEvents(sessionId), 1000);
+    const interval = setInterval(() => fetchEvents(sessionId), 100);
     return () => clearInterval(interval);
   };
   
@@ -120,6 +115,8 @@ const Page: React.FC = () => {
       if (!response.ok) {
         throw new Error('Failed to send click event');
       }
+      setErrorMessage('');
+      setGameOver(false);
     } catch (error) {
       console.error('Error sending click event:', error);
       setGameOver(true);

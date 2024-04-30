@@ -49,11 +49,8 @@ public class GameSessionController {
                 .doOnComplete(() -> {
                     log.info("Session completed for: {}", playerGameSession);
                     try {
-                        Player newPlayer = new Player();
                         ServerGameEvent matchResults = gameSessionProcessor.calculateMatchResults(playerGameSession);
-                        newPlayer.setPlayerName(playerName);
-                        newPlayer.setRating(matchResults.getScore());
-                        playerService.savePlayer(newPlayer);
+                        playerService.updateOrCreatePlayer(playerName, matchResults.getScore());
                     } catch (Exception ex) {
                         log.error("Can't save player", ex);
                     }

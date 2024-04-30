@@ -45,8 +45,8 @@ public class GameSessionProcessor {
 
     private boolean compareEvents(ServerGameEvent cachedServerEvent, PlayerClickedEvent playerClickedEvent) {
         return cachedServerEvent != null && playerClickedEvent != null
-                && cachedServerEvent.getX() == playerClickedEvent.getX()
-                && cachedServerEvent.getY() == playerClickedEvent.getY()
+                && Math.abs(cachedServerEvent.getX() - playerClickedEvent.getX()) < 30
+                && Math.abs(cachedServerEvent.getY() - playerClickedEvent.getY()) < 10
                 && !cachedServerEvent.isEnd();
     }
 }
