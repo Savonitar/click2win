@@ -1,0 +1,45 @@
+version: 2
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/click2win-ui"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Savonitar"
+    commit-message:
+      prefix: "deps(ui)"
+    groups:
+      npm-development-minor-and-patch:
+        applies-to: "version-updates"
+        dependency-type: "development"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:15"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Savonitar"
+    commit-message:
+      prefix: "deps(java)"
+    groups:
+      gradle-minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
