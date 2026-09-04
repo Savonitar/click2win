@@ -21,7 +21,7 @@ sourceSets {
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.7.0'
+        artifact = 'com.google.protobuf:protoc:4.36.1'
     }
 }
 
@@ -29,8 +29,8 @@ dependencies {
     implementation 'io.projectreactor:reactor-core:3.6.4'
 
     // Google Protobuf
-    implementation 'com.google.protobuf:protobuf-java:3.7.0'
-    implementation 'com.google.protobuf:protobuf-java-util:3.7.0'
+    implementation 'com.google.protobuf:protobuf-java:4.36.1'
+    implementation 'com.google.protobuf:protobuf-java-util:4.36.1'
 
     // Logging
     implementation 'org.slf4j:slf4j-api:1.7.25'

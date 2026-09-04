@@ -20,7 +20,7 @@ sourceSets {
 }
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.7.0'
+        artifact = 'com.google.protobuf:protoc:4.36.1'
     }
     plugins {
         grpc {
@@ -54,8 +54,8 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 
     // Google Protobuf
-    implementation 'com.google.protobuf:protobuf-java:3.7.0'
-    implementation 'com.google.protobuf:protobuf-java-util:3.7.0'
+    implementation 'com.google.protobuf:protobuf-java:4.36.1'
+    implementation 'com.google.protobuf:protobuf-java-util:4.36.1'
 
     // Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter-api:6.1.3'
