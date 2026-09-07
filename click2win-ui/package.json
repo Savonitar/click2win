@@ -10,7 +10,7 @@
     "proto": "npx buf generate ../api"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "^1.8.0",
+    "@bufbuild/protobuf": "^2.14.1",
     "next": "16.3.4",
     "react": "^19",
     "react-dom": "^18"
