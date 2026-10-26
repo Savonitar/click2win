@@ -26,14 +26,14 @@ protobuf {
 }
 
 dependencies {
-    implementation 'io.projectreactor:reactor-core:3.8.7'
+    implementation 'io.projectreactor:reactor-core:3.8.8'
 
     // Google Protobuf
     implementation 'com.google.protobuf:protobuf-java:4.36.2'
     implementation 'com.google.protobuf:protobuf-java-util:4.36.2'
 
     // Logging
-    implementation 'org.slf4j:slf4j-api:2.0.19'
+    implementation 'org.slf4j:slf4j-api:2.0.20'
 
     // Lombok
     implementation 'org.projectlombok:lombok:1.18.48'
