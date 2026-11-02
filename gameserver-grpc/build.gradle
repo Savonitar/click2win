@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'com.google.protobuf' version '0.10.0'
-    id 'org.springframework.boot' version '4.1.1'
+    id 'org.springframework.boot' version '4.1.2'
 }
 
 group 'savonitar.click2win'
@@ -24,7 +24,7 @@ protobuf {
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.84.0'
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.85.1'
         }
     }
     generateProtoTasks {
@@ -36,16 +36,16 @@ protobuf {
 
 dependencies {
     implementation(project(":gameserver-core"))
-    implementation 'io.projectreactor:reactor-core:3.8.7'
+    implementation 'io.projectreactor:reactor-core:3.8.8'
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-web:4.1.1'
+    implementation 'org.springframework.boot:spring-boot-starter-web:4.1.2'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1'
 
     // Grpc
     implementation 'net.devh:grpc-server-spring-boot-starter:3.1.0.RELEASE'
-    implementation 'io.grpc:grpc-netty:1.84.0'
-    implementation 'io.grpc:grpc-protobuf:1.84.0'
-    implementation 'io.grpc:grpc-stub:1.84.0'
+    implementation 'io.grpc:grpc-netty:1.85.1'
+    implementation 'io.grpc:grpc-protobuf:1.85.1'
+    implementation 'io.grpc:grpc-stub:1.85.1'
     implementation 'javax.annotation:javax.annotation-api:1.3.2'
 
     // Lombok
@@ -61,7 +61,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:6.1.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.1.3'
     testImplementation 'net.devh:grpc-client-spring-boot-starter:3.1.0.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-test:4.1.1'
+    implementation 'org.springframework.boot:spring-boot-starter-test:4.1.2'
 }
 
 test {
